@@ -1,7 +1,6 @@
 // get all the users
 
 const User = require("../model/User");
-const { trace } = require("../routes/menuRoutes");
 
 const getAllUsers = async (req, res) => {
     try {
