@@ -36,7 +36,7 @@ app.post("/jwt", async (req, res) => {
 const menuRoutes = require("./api/routes/menuRoutes");
 const cartRoutes = require("./api/routes/cartRoutes");
 const userRoutes = require("./api/routes/userRoutes");
-const paymentRoutes = require("./api/routes/paymentRoute");
+const paymentRoutes = require("./api/routes/paymentRouter");
 app.use("/menu", menuRoutes);
 app.use("/carts", cartRoutes);
 app.use("/users", userRoutes);
