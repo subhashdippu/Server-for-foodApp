@@ -1,28 +1,27 @@
-const express = require('express')
-const mongoose = require('mongoose')
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const port = process.env.PORT || 6001;
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-const app = express()
-const cors = require('cors');
-const port = 6001
-// console.log(process.env.PORT)
-require('dotenv').config()
-// console.log(process.env.STRIPE_SECRET_KEY)
+// console.log(process.env.ACCESS_TOKEN_SECRET);
 
-// middleware
-app.use(cors())
-app.use(express.json())
+// middlewares
+app.use(cors());
+app.use(express.json());
 
-// mongodb Configuration
-// username: subhashprasad52468
-// password: zqLFG7BfIcZjpylo
-// console.log(process.env.ACCESS_TOKEN_SECRET)
+// mongodb configurations
+//
+
 mongoose
-    .connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ysxrh2h.mongodb.net/FoodAppDb?retryWrites=true&w=majority&appName=Cluster0`)
+    .connect(
+        `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.qyyaa8q.mongodb.net/foodappdb?retryWrites=true&w=majority`
+    )
     .then(console.log("mongodb connected successfully"))
-    .catch((error) => console.log("Error connecting to mongodb", error))
-
+    .catch((error) => console.log("error connecting to mongodb", error));
 
 // jwt authentication
 app.post("/jwt", async (req, res) => {
@@ -33,15 +32,15 @@ app.post("/jwt", async (req, res) => {
     res.send({ token });
 });
 
-// Middleware 
-const varifytoken = (req, res, next) => {
-    if (!req.header.authorization) {
-        return res.status(401).send({ message: "unothesgi" })
-    }
-    const token = req.headers.authorization.split(" ")[1];
-    console.log(token)
-}
-
+// importing routes
+const menuRoutes = require("./api/routes/menuRoutes");
+const cartRoutes = require("./api/routes/cartRoutes");
+const userRoutes = require("./api/routes/userRoutes");
+const paymentRoutes = require("./api/routes/paymentRoute");
+app.use("/menu", menuRoutes);
+app.use("/carts", cartRoutes);
+app.use("/users", userRoutes);
+app.use("/payments", paymentRoutes);
 
 // stripe payment routes
 
@@ -61,22 +60,10 @@ app.post("/create-payment-intent", async (req, res) => {
     });
 });
 
-// import routes
-const menuRoutes = require('./api/routes/menuRoutes')
-const cartRoutes = require('./api/routes/cartRoutes')
-const userRoutes = require('./api/routes/userRoutes')
-const paymentRoutes = require("./api/routes/paymentRouter");
-
-app.use("/menu", menuRoutes)
-app.use("/carts", cartRoutes)
-app.use("/users", userRoutes)
-app.use("/payments", paymentRoutes)
-
-
-app.get('/', varifytoken, (req, res) => {
-    res.send('Hello World!')
-})
+app.get("/", (req, res) => {
+    res.send("Hello World this is foodApp!");
+});
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+    console.log(`Example app listening on port ${port}`);
+});
